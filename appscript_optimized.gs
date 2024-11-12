@@ -12,19 +12,24 @@ function doGet(e) {
     // Set status as "Empty" under the location's column
     sheet.getRange(2, locationColIndex).setValue("Empty");
 
-    // Determine the next available row in the specific column for the location
+    // Determine the last filled row in the specific column for the location
     const columnData = sheet.getRange(3, locationColIndex, sheet.getMaxRows() - 2, 1).getValues();
-    let emptyRow = 3;
+    let lastRowInColumn = 3;
 
-    for (let i = 0; i < columnData.length; i++) {
-      if (columnData[i][0] === "") {
-        emptyRow = i + 3; // Adjust for actual row number starting from row 3
+    for (let i = columnData.length - 1; i >= 0; i--) {
+      if (columnData[i][0] !== "") {
+        lastRowInColumn = i + 4; // Adjust for actual row number starting from row 3
         break;
       }
     }
 
+    // Check if we need to add more rows
+    if (lastRowInColumn > sheet.getMaxRows()) {
+      sheet.insertRowsAfter(sheet.getMaxRows(), 100); // Adds 100 more rows if we exceed current limits
+    }
+
     // Set the current datetime in the next available row under the location column
-    sheet.getRange(emptyRow, locationColIndex).setValue(now);
+    sheet.getRange(lastRowInColumn, locationColIndex).setValue(now);
 
     // Send an email notification
     sendNotificationEmail(location);
@@ -32,12 +37,5 @@ function doGet(e) {
 
   // Return a blank response
   return ContentService.createTextOutput("");
-}
-
-function sendNotificationEmail(location) {
-  const recipients = "team@example.com"; // Replace with your team's email
-  const subject = `Dispenser Out of Stock Alert - ${location}`;
-  const message = `The dispenser at location ${location} is empty as of ${new Date().toLocaleString()}. Please restock it.`;
-  MailApp.sendEmail(recipients, subject, message);
 }
 
