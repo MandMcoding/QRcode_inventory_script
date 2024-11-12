@@ -6,6 +6,7 @@ Scan a QR code and it will save the datetime and the specific QR code scanned to
 ## Generating QR Codes
 
 Links have the structure
+
 Google:
 
 ```
