@@ -7,9 +7,10 @@ Scan a QR code and it will save the datetime and the specific QR code scanned to
 
 Links have the structure
 Google:
-'''
+
+```
 https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec?location=L1
-'''
+```
 
 
 ---
